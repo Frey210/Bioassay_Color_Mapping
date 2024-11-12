@@ -1,12 +1,12 @@
 # Bioassay_Color_Mapping
 
-# Pond Water Color Measurement System with TCS3200 & Camera Integration
+# Pond Water Color Measurement System with TCS34725 & Camera Integration
 
-This project combines a **TCS3200 color sensor** and a **camera** to measure the RGB values of pond water and classify the concentration of plankton (Skeletonema) based on color changes. The system processes data using **KNN classification** and integrates both the camera and sensor readings. The setup includes a **Raspberry Pi** for data collection and a serial connection for communication between Arduino (with TCS3200) and the Raspberry Pi.
+This project combines a **TCS34725 color sensor** and a **camera** to measure the RGB values of pond water and classify the concentration of plankton (Skeletonema) based on color changes. The system processes data using **KNN classification** and integrates both the camera and sensor readings. The setup includes a **Raspberry Pi** for data collection and a serial connection for communication between Arduino (with TCS34725) and the Raspberry Pi.
 
 ## Features
 
-- **Real-time RGB Value Monitoring:** Displays live RGB values from both the TCS3200 color sensor and camera feed.
+- **Real-time RGB Value Monitoring:** Displays live RGB values from both the TCS34725 color sensor and camera feed.
 - **Color Patch Representation:** Visual representation of the RGB values from the sensor and camera in the OpenCV window.
 - **Data Logging:** Saves images and RGB data for further analysis.
 - **Calibration Support:** Includes a custom calibration feature for sensor accuracy.
@@ -14,7 +14,7 @@ This project combines a **TCS3200 color sensor** and a **camera** to measure the
 
 ## Hardware Requirements
 
-- **TCS3200 Color Sensor**
+- **TCS34725 Color Sensor**
 - **Camera (USB or Pi Camera)**
 - **Arduino (any model with a serial port)**
 - **Raspberry Pi**
@@ -27,21 +27,20 @@ This project combines a **TCS3200 color sensor** and a **camera** to measure the
 - **OpenCV**
 - **NumPy**
 - **PySerial (for communication with Arduino)**
-- **Arduino IDE** (for TCS3200 sensor code)
+- **Arduino IDE** (for TCS34725 sensor code)
 
 ## Wiring Instructions
 
-### TCS3200 Color Sensor
+![Wiring Diagram](images/wiring_diagram.png)
 
-| Pin Name | Arduino Pin | Description                        |
-|----------|-------------|------------------------------------|
-| VCC      | 5V          | Power Supply                       |
-| GND      | GND         | Ground                             |
-| S0       | D3          | Output frequency scaling S0        |
-| S1       | D4          | Output frequency scaling S1        |
-| S2       | D5          | Photodiode type selection S2       |
-| S3       | D6          | Photodiode type selection S3       |
-| OUT      | D2          | Output frequency (to interrupt pin)|
+### TCS34725 Color Sensor
+
+| Pin Name | Arduino Pin | Description                                        |
+|----------|-------------|----------------------------------------------------|
+| VCC      | 5V          | Supplies power to the sensor (5V recommended).     |
+| GND      | GND         | Ground connection.                                 |
+| SDA      | A4          | Data line for I2C communication (connect to A4).   |
+| SCL      | A5          | Clock line for I2C communication (connect to A5).  |
 
 Ensure the sensor is inside a waterproof tube for direct contact with water and that stable lighting is used for accurate measurements.
 
@@ -59,7 +58,7 @@ Ensure the sensor is inside a waterproof tube for direct contact with water and 
    ```
 
 3. **Upload the Arduino code**:
-   - Open the `TCS3200.ino` file in the Arduino IDE.
+   - Open the `TCS34725.ino` file in the Arduino IDE.
    - Select the appropriate board and port.
    - Upload the code to your Arduino.
 
@@ -78,7 +77,7 @@ Ensure the sensor is inside a waterproof tube for direct contact with water and 
 
 ## Calibration Guide
 
-The system uses the RGB values from the TCS3200 sensor and the camera to compare readings. Follow these steps to calibrate:
+The system uses the RGB values from the TCS34725 sensor and the camera to compare readings. Follow these steps to calibrate:
 
 1. Place a color sample in the camera's field of view.
 2. Run the program and observe the RGB values from both the sensor and the camera.
