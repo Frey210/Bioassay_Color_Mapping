@@ -31,7 +31,7 @@ This project combines a **TCS34725 color sensor** and a **camera** to measure th
 
 ## Wiring Instructions
 
-![Wiring Diagram](images/wiring_diagram.png)
+![Wiring Diagram](image/wiring_diagram.png)
 
 ### TCS34725 Color Sensor
 
