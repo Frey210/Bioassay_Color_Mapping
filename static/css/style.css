@@ -1,0 +1,171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #198AFF;
+    padding: 25px;
+}
+.tagline{
+    font-size: 48px;
+    line-height: 1.5;
+    font-family: 'Poppins';
+}
+
+.logo {
+    height: 40px;
+    margin-left: 10px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.hero {
+    color: white;
+    background: linear-gradient(to right, #198aff 0%, #074590 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 20px;
+    position: relative;
+}
+
+.text-container {
+    max-width: 60%;
+    text-align: left;
+    margin-left: 50px;
+}
+
+h1 {
+    font-size: 64px;
+    font-weight: bolder;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    font-family: 'Poppins';
+}
+
+.result_title {
+    font-size: 20px;
+    line-height: 1.5;
+    font-family: 'Poppins';
+    color: #198AFF;
+}
+
+.highlight {
+    color: #E8AF30; /* Gold color for the highlighted text */
+    font-weight: bold;
+}
+
+.shrimp-img {
+    height: 50%;
+    margin-right: 20px;
+}
+
+.navigation {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    margin-top: 20px;
+}
+
+h2 {
+    color: #198AFF;
+    font-size: 40px;
+    font-family: 'Poppins';
+}
+
+
+/* Tombol default */
+.navigation button {
+    padding: 10px 30px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    background-color: #0056b3; /* Warna biru untuk tombol tidak aktif */
+    transition: background-color 0.3s;
+}
+
+/* Tombol aktif */
+.navigation button.active {
+    background-color: #FFD700; /* Warna kuning untuk tombol aktif */
+}
+
+
+.content-section {
+    padding: 20px;
+    text-align: center;
+}
+
+.content-section h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.water-image {
+    max-width: 80%;
+    height: auto;
+    margin: 15px 0;
+}
+
+.rgb-display {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.button-group button {
+    padding: 10px 20px;
+    background-color: #0073e6;
+    color: white;
+    border: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button-group button:hover {
+    background-color: #46a3ff;
+}
+
+.result {
+    margin-top: 15px;
+    font-size: 18px;
+    color: #0073e6;
+}
+
+.chart-container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+#densityChart {
+    width: 100%;
+    height: 200px;
+}
+
+.radio-group {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.radio-group label {
+    font-size: 16px;
+    margin: 0 15px;
+    color: #333;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 5px;
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FEEDVISION</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <header>
+        <img src="../static/images/logo.svg" alt="Aerasea Logo" class="logo">
+    </header>
+    <sectio class="space"></section>
+    <section class="hero">
+        <div class="text-container">
+            <h1>FEEDVISION</h1>
+            <p class="tagline">Sistem <span class="highlight">Deteksi Kepadatan</span> </p>
+            <p class="tagline">Pakan Alami Berbasis AI Pada</p>
+            <p class="tagline">Budidaya Udang dan Ikan</p>
+            <nav class="navigation">
+                <button id="deteksiBtn" onclick="showSection('deteksi')">Deteksi</button>
+                <button id="riwayatBtn" onclick="showSection('riwayat')">Riwayat</button>
+            </nav>
+        </div>
+        <img src="../static/images/shrimp-illustration.svg" alt="Shrimp Illustration" class="shrimp-img">
+    </section>
+
+    <section id="deteksi" class="content-section">
+        <h2>Tampilan Warna Air</h2>
+        <img id="captured-image" src="../static/images/sample_image.png" alt="Hasil Capture" class="water-image">
+        <p class="rgb-display" id="sensor-rgb">Sensor RGB: R=0 G=0 B=0</p>
+        <p class="rgb-display" id="camera-rgb">Kamera RGB: R=0 G=0 B=0</p>
+    
+        <div class="radio-group">
+            <label><input type="radio" name="bc" value="1" checked> Biru</label>
+            <label><input type="radio" name="bc" value="2"> Hitam</label>
+            <label><input type="radio" name="bc" value="3"> Putih</label>
+        </div>
+    
+        <div class="button-group">
+            <button id="captureBtn" onclick="captureData()">Ambil Gambar</button>
+            <button id="generateBtn" onclick="generatePrediction()">Generate</button>
+        </div>
+    
+        <div class="result">
+            <p class="result_title">Estimasi Kepadatan Pakan</p>
+            <span id="density-result">-</span>
+        </div>
+    </section>
+
+    <section id="riwayat" class="content-section" style="display: none;">
+        <h2>Riwayat Data</h2>
+        <canvas id="historyChart" width="400" height="200"></canvas>
+    </section>    
+    
+    <script src="../static/js/script.js"></script>
+</body>
+</html>
