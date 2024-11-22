@@ -156,7 +156,7 @@ def generate():
 def get_history():
     conn = sqlite3.connect('data.db')  # Ganti dengan nama database Anda
     cursor = conn.cursor()
-    query = "SELECT * FROM captures ORDER BY timestamp DESC LIMIT 10"
+    query = "SELECT * FROM captures ORDER BY id DESC LIMIT 10"
     cursor.execute(query)
     data = cursor.fetchall()
     conn.close()

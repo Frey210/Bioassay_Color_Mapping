@@ -302,3 +302,30 @@ h2 {
 .class-explanation p {
     margin: 5px 0;
 }
+
+.rgb-container {
+    background-color: #eef6ff; /* Latar belakang lembut dengan warna tema biru */
+    border: 1px solid #b0d4f1; /* Batas warna biru yang senada */
+    border-radius: 12px; /* Sudut membulat untuk tampilan modern */
+    padding: 20px; /* Memberikan ruang di dalam kotak */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Bayangan untuk kedalaman */
+    display: flex;
+    justify-content: space-between; /* Membagi ruang secara proporsional */
+    align-items: center; /* Menjaga elemen sejajar secara vertikal */
+    gap: 20px; /* Jarak antar elemen di dalam kotak */
+    max-width: 500px; /* Membatasi lebar maksimum */
+    margin: 20px auto; /* Memusatkan kotak di tengah */
+}
+
+.rgb-display {
+    font-family: 'Poppins', sans-serif; /* Konsisten dengan tema */
+    font-size: 1rem; /* Ukuran teks sedang */
+    font-weight: 500; /* Teks sedikit tebal untuk keterbacaan */
+    color: #1f4e78; /* Warna teks biru sesuai tema */
+    background-color: #ffffff; /* Latar belakang putih */
+    border: 1px solid #b0d4f1; /* Batas halus dengan warna biru tema */
+    border-radius: 8px; /* Sudut membulat */
+    padding: 10px 15px; /* Ruang dalam elemen */
+    text-align: center; /* Rata tengah teks */
+    flex: 1; /* Elemen menyesuaikan ukuran dalam kotak */
+}
