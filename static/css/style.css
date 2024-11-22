@@ -169,3 +169,136 @@ h2 {
 .radio-group input[type="radio"] {
     margin-right: 5px;
 }
+
+/* Tabel Utama */
+.data-table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* Baris Header */
+.data-table thead {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Header Kolom */
+.data-table th {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+/* Baris Data */
+.data-table tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+/* Styling Kolom Data */
+.data-table td {
+    padding: 10px 15px;
+    text-align: left;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Hover Effect untuk Baris */
+.data-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Tautan Gambar */
+.data-table a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.data-table a:hover {
+    text-decoration: underline;
+}
+
+/* Responsif untuk perangkat kecil */
+@media (max-width: 768px) {
+    .data-table {
+        width: 100%;
+    }
+
+    .data-table th, .data-table td {
+        padding: 8px 10px;
+    }
+
+    /* Ubah layout untuk tampilan kecil */
+    .data-table thead {
+        font-size: 14px;
+    }
+
+    .data-table tbody td {
+        font-size: 12px;
+    }
+}
+
+#loading {
+    display: none; /* Sembunyikan loading secara default */
+    text-align: center;
+    margin: 20px 0;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3; /* Warna latar belakang */
+    border-top: 4px solid #3498db; /* Warna spinner */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.info-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#infoBtn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+#infoBtn:hover {
+    background-color: #45a049;
+}
+
+.class-explanation {
+    display: none;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #333;
+    border-radius: 5px;
+    width: 250px;
+}
+
+.class-explanation p {
+    margin: 5px 0;
+}

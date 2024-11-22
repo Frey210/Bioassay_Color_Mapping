@@ -1,3 +1,4 @@
+// Fungsi untuk menampilkan bagian tertentu berdasarkan ID
 function showSection(sectionId) {
     const sections = document.querySelectorAll('.content-section');
     sections.forEach(section => section.style.display = 'none'); // Sembunyikan semua bagian
@@ -16,89 +17,152 @@ function showSection(sectionId) {
     }
 }
 
-// Inisialisasi halaman saat pertama kali dimuat
-document.addEventListener("DOMContentLoaded", function () {
-    showSection('deteksi');
-});
-
-console.log(document.getElementById('deteksiBtn').classList);
-console.log(document.getElementById('riwayatBtn').classList);
-
-// Fungsi untuk menangkap data dari kamera dan sensor
+// Variabel untuk menyimpan data sementara
 let capturedImagePath = null;
 let cameraRgb = [0, 0, 0];
 let sensorRgb = [0, 0, 0];
 let chart = null;
 
+// Fungsi untuk menangkap data
 function captureData() {
     fetch('/capture', { method: 'POST' })
         .then(response => response.json())
         .then(data => {
-            // Tampilkan gambar hasil capture
-            document.getElementById('captured-image').src = data.image_path;
+            if (data.error) {
+                alert(`Error: ${data.error}`);
+                return;
+            }
 
-            // Tampilkan nilai RGB sensor
-            document.getElementById('sensor-rgb').textContent = `Sensor RGB: R=${data.sensor_rgb[0]} G=${data.sensor_rgb[1]} B=${data.sensor_rgb[2]}`;
-            sensorRgb = data.sensor_rgb;
+            console.log('Image Path:', data.image_path); // Debugging path gambar
 
-            // Simpan path gambar
+            // Perbarui variabel global dengan data yang diterima
             capturedImagePath = data.image_path;
+            cameraRgb = data.camera_rgb; // Update nilai kamera RGB
+            sensorRgb = data.sensor_rgb; // Update nilai sensor RGB
 
-            // Tampilkan nilai RGB dari kamera (simulasi untuk sekarang)
-            document.getElementById('camera-rgb').textContent = `Kamera RGB: R=${data.camera_rgb[0]} G=${data.camera_rgb[1]} B=${data.camera_rgb[2]}`;
-            cameraRgb = data.camera_rgb;
+            // Tampilkan gambar dan nilai RGB
+            document.getElementById('captured-image').src = capturedImagePath;
+            document.getElementById('sensor-rgb').textContent = `Sensor RGB: R=${sensorRgb[0]} G=${sensorRgb[1]} B=${sensorRgb[2]}`;
+            document.getElementById('camera-rgb').textContent = `Kamera RGB: R=${cameraRgb[0]} G=${cameraRgb[1]} B=${cameraRgb[2]}`;
         })
-        .catch(err => console.error('Error:', err));
+        .catch(err => {
+            console.error('Error capturing data:', err);
+        });
 }
 
-// Fungsi untuk mengirim data dan menghasilkan prediksi
-function generatePrediction() {
-    const bcValue = document.querySelector('input[name="bc"]:checked').value;
+// Fungsi untuk menampilkan hasil prediksi
+function showPredictionResult(prediction) {
+    // Sembunyikan spinner setelah hasil prediksi muncul
+    document.getElementById('loading').style.display = 'none';
+    
+    // Tampilkan hasil prediksi
+    document.getElementById('density-result').textContent = prediction;
+}
 
+// Fungsi untuk mengirim data RGB dan nilai BC ke backend
+function generateDensity() {
+    // Tampilkan spinner loading saat proses dimulai
+    document.getElementById('loading').style.display = 'block';
+
+    // Ambil nilai dari radio button
+    const bcElement = document.querySelector('input[name="bc"]:checked');
+    if (!bcElement) {
+        alert("Silakan pilih nilai BC terlebih dahulu!");
+        return;
+    }
+    const bc = bcElement.value;
+
+    // Validasi data sebelum dikirim
+    if (!capturedImagePath || cameraRgb.every(val => val === 0) || sensorRgb.every(val => val === 0)) {
+        alert("Pastikan Anda sudah menekan tombol 'Capture Data' terlebih dahulu.");
+        return;
+    }
+
+    // Kirim data ke backend
     fetch('/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             camera_rgb: cameraRgb,
             sensor_rgb: sensorRgb,
-            bc: bcValue,
+            bc: bc,
             image_path: capturedImagePath
         })
     })
         .then(response => response.json())
         .then(data => {
-            // Tampilkan hasil prediksi
-            document.getElementById('density-result').textContent = `${data.density} cell/ml`;
+            // Sembunyikan spinner loading setelah data diterima
+            document.getElementById('loading').style.display = 'none';
 
-            // Update grafik dengan data baru
-            updateChart();
+            if (data.error) {
+                alert(`Error: ${data.error}`);
+            } else {
+                // Mendapatkan kelas hasil prediksi dan menampilkan rentang
+                const classLabel = data.density;  // Misalnya "S1", "S2", dll.
+                
+                // Mendefinisikan rentang nilai kelas
+                const classRanges = {
+                    S1: { min: 1.25, max: 9.5 },
+                    S2: { min: 9.51, max: 15.75 },
+                    S3: { min: 15.76, max: 21.5 },
+                    S4: { min: 21.51, max: 33.75 },
+                    S5: { min: 33.76, max: 58.5 }
+                };
+
+                // Menampilkan hasil prediksi dengan rentang nilai
+                const range = classRanges[classLabel];
+                const rangeText = `(${range.min} - ${range.max}) * 10^4 cell/ml`;
+                
+                // Menampilkan hasil prediksi di elemen 'density-result'
+                document.getElementById('density-result').textContent = 
+                    `Predicted Density: ${classLabel} ${rangeText}`;
+            }
         })
-        .catch(err => console.error('Error:', err));
+        .catch(error => {
+            // Sembunyikan spinner loading jika terjadi error
+            document.getElementById('loading').style.display = 'none';
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat memproses data.');
+        });
 }
 
-// Fungsi untuk memperbarui grafik dengan data terbaru
+
+// Fungsi untuk mengonversi densitas ke nilai numerik
+function convertDensityToValue(density) {
+    const densityMap = {
+        'S1': 1,
+        'S2': 2,
+        'S3': 3,
+        'S4': 4,
+        'S5': 5
+    };
+    return densityMap[density] || 0; // Default ke 0 jika tidak ada
+}
+
+// Fungsi untuk memperbarui grafik riwayat
 function updateChart() {
     fetch('/history', { method: 'GET' })
         .then(response => response.json())
         .then(data => {
-            // Ekstraksi data dari database
-            const timestamps = data.map(item => item[5]); // Timestamp dari database
-            const densities = data.map(item => parseFloat(item[3])); // Density value
+            const timestamps = data.map(item => item.timestamp);
+            const densities = data.map(item => convertDensityToValue(item.density)); // Mengonversi densitas ke nilai numerik
 
+            // Perbarui tabel riwayat
+            updateTable(data);
+
+            // Perbarui grafik
             if (chart) {
-                // Perbarui data pada grafik jika sudah ada
                 chart.data.labels = timestamps;
                 chart.data.datasets[0].data = densities;
                 chart.update();
             } else {
-                // Buat grafik baru jika belum ada
                 const ctx = document.getElementById('historyChart').getContext('2d');
                 chart = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: timestamps,
                         datasets: [{
-                            label: 'Kepadatan Pakan (cell/ml)',
+                            label: 'Kepadatan Pakan (S1-S5)',
                             data: densities,
                             borderColor: 'rgba(75, 192, 192, 1)',
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -118,7 +182,16 @@ function updateChart() {
                             y: {
                                 title: {
                                     display: true,
-                                    text: 'Kepadatan Pakan (cell/ml)'
+                                    text: 'Kepadatan Pakan (S1-S5)'
+                                },
+                                ticks: {
+                                    beginAtZero: true,
+                                    stepSize: 1,
+                                    max: 5
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Kepadatan (S1-S5)'
                                 }
                             }
                         }
@@ -126,24 +199,122 @@ function updateChart() {
                 });
             }
         })
-        .catch(err => console.error('Error:', err));
+        .catch(err => console.error('Error updating chart:', err));
 }
 
-// Fungsi lama untuk mengirim data simulasi (masih dipertahankan)
-function submitData() {
-    const bcValue = document.querySelector('input[name="bc"]:checked').value;
-
-    console.log("Nilai BC yang dipilih:", bcValue);
-
-    const simulatedResponse = {
-        density: "18 cell/ml"
+// Fungsi untuk mengonversi densitas ke nilai numerik
+function convertDensityToValue(density) {
+    const densityMap = {
+        'S1': 1,
+        'S2': 2,
+        'S3': 3,
+        'S4': 4,
+        'S5': 5
     };
-
-    document.getElementById('density-result').textContent = simulatedResponse.density;
+    return densityMap[density] || 0; // Default ke 0 jika tidak ada
 }
 
-// Inisialisasi halaman dan grafik saat pertama kali dimuat
-document.addEventListener("DOMContentLoaded", function() {
-    showSection('deteksi');
-    updateChart(); // Perbarui grafik saat halaman pertama kali dimuat
+// Fungsi untuk memperbarui grafik riwayat
+function updateChart() {
+    fetch('/history', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            const timestamps = data.map(item => item.timestamp);
+            const densities = data.map(item => convertDensityToValue(item.density)); // Mengonversi densitas ke nilai numerik
+
+            // Perbarui tabel riwayat
+            updateTable(data);
+
+            // Perbarui grafik
+            if (chart) {
+                chart.data.labels = timestamps;
+                chart.data.datasets[0].data = densities;
+                chart.update();
+            } else {
+                const ctx = document.getElementById('historyChart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: timestamps,
+                        datasets: [{
+                            label: 'Kepadatan Pakan (S1-S5)',
+                            data: densities,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 1,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Waktu'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Kepadatan Pakan (S1-S5)'
+                                },
+                                ticks: {
+                                    beginAtZero: true,
+                                    stepSize: 1,
+                                    max: 5
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Kepadatan (S1-S5)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        })
+        .catch(err => console.error('Error updating chart:', err));
+}
+
+fetch('/history')
+    .then(response => response.json())
+    .then(data => {
+        updateTable(data);  // Panggil fungsi untuk memperbarui tabel dengan data
+    });
+
+    function updateTable(data) {
+        const tableBody = document.getElementById('historyTable').querySelector('tbody');
+        tableBody.innerHTML = ''; // Kosongkan isi tabel
+    
+        data.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.timestamp}</td>
+                <td>R=${item.camera_rgb[0].toFixed(3)} G=${item.camera_rgb[1].toFixed(3)} B=${item.camera_rgb[2].toFixed(3)}</td>
+                <td>R=${item.sensor_rgb[0].toFixed(3)} G=${item.sensor_rgb[1].toFixed(3)} B=${item.sensor_rgb[2].toFixed(3)}</td>
+                <td>${item.bc_value}</td>
+                <td>${item.density}</td>
+                <td><a href="${item.image_path}" target="_blank">Lihat Gambar</a></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+
+
+// Inisialisasi halaman
+document.addEventListener("DOMContentLoaded", function () {
+    showSection('deteksi'); // Default ke bagian deteksi
+    updateChart(); // Perbarui grafik saat halaman dimuat
 });
+
+function toggleExplanation() {
+    var explanation = document.getElementById("classExplanation");
+    // Toggle visibility of explanation
+    if (explanation.style.display === "none" || explanation.style.display === "") {
+        explanation.style.display = "block";
+    } else {
+        explanation.style.display = "none";
+    }
+}
